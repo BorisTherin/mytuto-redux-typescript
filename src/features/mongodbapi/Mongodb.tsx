@@ -4,7 +4,7 @@ import { requestMongoDdAsync, selectInput } from "./mongodbSlice"
 import styles from "../counter/Counter.module.css"
 
 export function Mongodb() {
-  const input = useAppSelector(selectInput)
+  const input = JSON.stringify(useAppSelector(selectInput))
   const dispatch = useAppDispatch()
   const [inputValue, setinputValue] = useState(input)
 
@@ -20,8 +20,8 @@ export function Mongodb() {
       <div className={styles.row}>
         <span className={styles.value}>
           <textarea
-            cols="80"
-            rows="20"
+            cols={80}
+            rows={20}
             value={inputValue}
             onChange={(e) => setinputValue(JSON.parse(e.target.value))}
           />
