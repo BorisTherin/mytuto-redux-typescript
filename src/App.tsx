@@ -1,5 +1,6 @@
 import logo from "./logo.svg"
 import { Counter } from "./features/counter/Counter"
+import { Mongodb } from "./features/mongodbapi/Mongodb"
 import "./App.css"
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
+        <Mongodb />
         <Counter />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.

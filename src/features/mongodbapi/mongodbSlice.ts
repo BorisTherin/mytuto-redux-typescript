@@ -3,12 +3,12 @@ import { RootState, AppThunk } from "../../app/store"
 //import { fetchCount } from "./counterAPI"
 
 export interface MongoDbState {
-  value: object
+  value: string
   status: "idle" | "loading" | "failed"
 }
 
 const initialState: MongoDbState = {
-  value: {},
+  value: "",
   status: "idle",
 }
 
@@ -17,20 +17,18 @@ const initialState: MongoDbState = {
 // will call the thunk with the `dispatch` function as the first argument. Async
 // code can then be executed and other actions can be dispatched. Thunks are
 // typically used to make async requests.
-export const incrementAsync = createAsyncThunk(
-  "mongodb/fetchCount",
-  async (amount: number) => {
-    const response = { data: 0 } //await fetchCount(amount)
-    // The value we return becomes the `fulfilled` action payload
-    return response
-  },
-)
-
 export const requestMongoDdAsync = createAsyncThunk(
   "mongodb/request",
   async () => {
-    const response = await fetch("", { mode: "no-cors" })
-    return response
+    const response = await fetch("http://localhost:3000/pesto-content-type", {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+      },
+      mode: "no-cors",
+    })
+    console.log("reponse: ", response.json)
+    return JSON.stringify(response.json)
   },
 )
 
@@ -76,6 +74,6 @@ export const mongodbSlice = createSlice({
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
-export const selectInput = (state: RootState) => state.mongobd.value
+export const selectInput = (state: RootState) => state.mongodb.value
 
 export default mongodbSlice.reducer
