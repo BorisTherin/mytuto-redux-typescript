@@ -10,20 +10,20 @@ export function Mongodb() {
 
   return (
     <div>
+      <button
+        className={styles.button}
+        aria-label="Decrement value"
+        onClick={() => dispatch(requestMongoDdAsync())}
+      >
+        Get
+      </button>
       <div className={styles.row}>
-        <button
-          className={styles.button}
-          aria-label="Decrement value"
-          onClick={() => dispatch(requestMongoDdAsync())}
-        >
-          Get
-        </button>
         <span className={styles.value}>
           <textarea
             cols="80"
             rows="20"
             value={inputValue}
-            onChange={(e) => setinputValue(e.target.value)}
+            onChange={(e) => setinputValue(JSON.parse(e.target.value))}
           />
         </span>
       </div>

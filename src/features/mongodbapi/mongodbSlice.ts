@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { RootState, AppThunk } from "../../app/store"
+import { RootState } from "../../app/store"
 //import { fetchCount } from "./counterAPI"
 
 export interface MongoDbState {
-  value: string
+  value: object[]
   status: "idle" | "loading" | "failed"
 }
 
 const initialState: MongoDbState = {
-  value: "",
+  value: [],
   status: "idle",
 }
 
@@ -21,14 +21,19 @@ export const requestMongoDdAsync = createAsyncThunk(
   "mongodb/request",
   async () => {
     const response = await fetch("http://localhost:3000/pesto-content-type", {
-      method: "GET",
-      headers: {
-        "content-type": "application/json",
-      },
       mode: "no-cors",
     })
-    console.log("reponse: ", response.json)
-    return JSON.stringify(response.json)
+    if (!response.ok) {
+      console.log("Network response was not OK")
+      throw new Error("Network response was not OK")
+    }
+    console.log("reponse: ", response)
+    return response //.formData()
+    /*
+    const json = await response.json()
+    console.log("ret: ", json)
+    return JSON.stringify(json)
+    */
   },
 )
 
@@ -58,13 +63,16 @@ export const mongodbSlice = createSlice({
     builder
       .addCase(requestMongoDdAsync.pending, (state) => {
         state.status = "loading"
+        console.log("loading")
       })
       .addCase(requestMongoDdAsync.fulfilled, (state, action) => {
         state.status = "idle"
-        state.value = action.payload
+        //state.value = JSON.stringify(action.payload)
+        console.log("fulfilled: ", action.payload)
       })
       .addCase(requestMongoDdAsync.rejected, (state) => {
         state.status = "failed"
+        console.log("failed")
       })
   },
 })
