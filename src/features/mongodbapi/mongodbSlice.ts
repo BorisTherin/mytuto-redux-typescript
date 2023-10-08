@@ -1,13 +1,48 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../../app/store"
+/*
+[
+  {
+    "_id":"65201112f92b3d9b3b7174ab",
+    "title":"robe",
+    "description":"un autre type de contenu pour mon blog",
+    "identifier":"robe",
+    "createdAt":"2023-10-06T13:52:18.627Z",
+    "__v":0
+  }
+]
+*/
+
+export interface MongoDbShema {
+  _id: string
+  title: string
+  description: string
+  createdAt: string
+  __v: number
+}
+/*
+const initialState: MongoDbState = {
+  _id: "",
+  title: "",
+  description: "",
+  createdAt: "",
+  __v: 0,
+}
+*/
 
 export interface MongoDbState {
-  value: object[]
+  value: MongoDbShema
   status: "idle" | "loading" | "failed"
 }
 
 const initialState: MongoDbState = {
-  value: [],
+  value: {
+    _id: "",
+    title: "",
+    description: "",
+    createdAt: "",
+    __v: 0,
+  },
   status: "idle",
 }
 
@@ -22,17 +57,13 @@ export const requestMongoDdAsync = createAsyncThunk(
     const response = await fetch("http://localhost:3000/pesto-content-type", {
       mode: "no-cors",
     })
-    if (!response.ok) {
-      console.log("Network response was not OK")
-      throw new Error("Network response was not OK")
+    if (response && !response.ok) {
+      console.log(" response was not OK ")
     }
+    const json: any = await response.json()
+    console.log("json(): ", json)
     console.log("reponse: ", response)
-    return response //.formData()
-    /*
-    const json = await response.json()
-    console.log("ret: ", json)
-    return JSON.stringify(json)
-    */
+    return JSON.stringify(response)
   },
 )
 
@@ -50,9 +81,9 @@ export const mongodbSlice = createSlice({
         console.log("loading")
       })
       .addCase(requestMongoDdAsync.fulfilled, (state, action) => {
-        state.status = "idle"
-        //state.value = JSON.stringify(action.payload)
         console.log("fulfilled: ", action.payload)
+        state.status = "idle"
+        state.value = JSON.parse(action.payload)
       })
       .addCase(requestMongoDdAsync.rejected, (state) => {
         state.status = "failed"
