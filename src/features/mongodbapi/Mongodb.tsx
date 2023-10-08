@@ -22,6 +22,7 @@ export function Mongodb() {
           <textarea
             cols={80}
             rows={20}
+            /* FIX store effiecient : value={inputValue} to value={input} aka real store hook */
             value={input}
             onChange={(e) => setinputValue(JSON.parse(e.target.value))}
           />
