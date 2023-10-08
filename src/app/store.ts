@@ -7,12 +7,6 @@ export const store = configureStore({
   reducer: {
     counter: counterReducer,
     mongodb: mongodbReducer,
-    /*
-    middleware: (getDefaultMiddleware: any) =>
-      getDefaultMiddleware({
-        serializableCheck: false,
-      }),
-    */
   },
 })
 

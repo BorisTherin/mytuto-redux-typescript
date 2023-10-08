@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../../app/store"
-/*
+
+/* 
+  FORKED FROM ../counter/conterSlice.ts IN ORDER TO MAKE MY 1ST PESTO-API REQUEST
+*/
+const API_URL = "http://localhost:3000/pesto-content-type"
+
+/* schema mongodb
 [
   {
     "_id":"65201112f92b3d9b3b7174ab",
@@ -20,15 +26,6 @@ export interface MongoDbShema {
   createdAt: string
   __v: number
 }
-/*
-const initialState: MongoDbState = {
-  _id: "",
-  title: "",
-  description: "",
-  createdAt: "",
-  __v: 0,
-}
-*/
 
 export interface MongoDbState {
   value: MongoDbShema
@@ -54,14 +51,15 @@ const initialState: MongoDbState = {
 export const requestMongoDdAsync = createAsyncThunk(
   "mongodb/request",
   async () => {
-    const response = await fetch("http://localhost:3000/pesto-content-type", {
+    const response = await fetch(API_URL, {
+      method: "GET",
       mode: "no-cors",
     })
     if (response && !response.ok) {
-      console.log(" response was not OK ")
+      console.log("response.ok = false ")
     }
-    const json: any = await response.json()
-    console.log("json(): ", json)
+    //const json: any = await response.json()
+    //console.log("json(): ", json)
     console.log("reponse: ", response)
     return JSON.stringify(response)
   },
@@ -78,21 +76,19 @@ export const mongodbSlice = createSlice({
     builder
       .addCase(requestMongoDdAsync.pending, (state) => {
         state.status = "loading"
-        console.log("loading")
+        console.log("requestMongoDdAsync loading")
       })
       .addCase(requestMongoDdAsync.fulfilled, (state, action) => {
-        console.log("fulfilled: ", action.payload)
         state.status = "idle"
+        console.log(API_URL + " fetch fulfilled, payload: ", action.payload)
         state.value = JSON.parse(action.payload)
       })
       .addCase(requestMongoDdAsync.rejected, (state) => {
         state.status = "failed"
-        console.log("failed")
+        console.log("requestMongoDdAsync failed")
       })
   },
 })
-
-// export const { increment, decrement, incrementByAmount } = mongodbSlice.actions
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
