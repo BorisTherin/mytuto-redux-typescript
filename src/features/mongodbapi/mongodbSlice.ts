@@ -51,10 +51,11 @@ const initialState: MongoDbState = {
 export const requestMongoDdAsync = createAsyncThunk(
   "mongodb/request",
   async () => {
-    const response = await fetch(API_URL, {
+    const options: object = {
       method: "GET",
       mode: "no-cors",
-    })
+    }
+    const response = await fetch(API_URL, options)
     if (response && !response.ok) {
       console.log("response.ok = false ")
     }
