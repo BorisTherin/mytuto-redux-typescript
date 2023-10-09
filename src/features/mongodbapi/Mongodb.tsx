@@ -19,16 +19,6 @@ export function Mongodb() {
 
   return (
     <div>
-      <button
-        className={styles.button}
-        aria-label="List entities"
-        onClick={() => dispatch(requestMongoDdAsync())}
-      >
-        LIST PROJECTS
-      </button>
-      <div className={styles.row}>
-        <Project inputs={input} />
-      </div>
       <div>
         <textarea
           id="source"
@@ -46,6 +36,17 @@ export function Mongodb() {
       >
         NEW CONTENT TYPE
       </button>
+      <hr />
+      <button
+        className={styles.button}
+        aria-label="List entities"
+        onClick={() => dispatch(requestMongoDdAsync())}
+      >
+        LIST PROJECTS
+      </button>
+      <div className={styles.projects}>
+        <Project inputs={input} />
+      </div>
     </div>
   )
 }
