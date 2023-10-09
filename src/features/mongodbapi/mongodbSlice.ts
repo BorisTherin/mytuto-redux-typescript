@@ -8,37 +8,58 @@ const FRONT_DEV_PORT = "5173"
 const FRONT_DEV_HOST = "localhost"
 const API_PORT = "3000"
 const API_HOST = "localhost"
-const API_URL = `http://${API_HOST}:${API_PORT}/pesto-content-type`
-/* schema mongodb
-[
-  {
-    "_id":"65201112f92b3d9b3b7174ab",
-    "title":"robe",
-    "description":"un autre type de contenu pour mon blog",
-    "identifier":"robe",
-    "createdAt":"2023-10-06T13:52:18.627Z",
-    "__v":0
-  }
-]
-*/
-/*
-export interface MongoDbShema {
-  _id: string
-  title: string
-  description: string
-  createdAt: string
-  __v: number
+const API_BASE_URL = `http://${API_HOST}:${API_PORT}`
+
+type ApiHeader = {
+  Accept: string
+  "Content-Type": string
 }
-*/
-export interface MongoDbState {
-  value: string
-  status: "idle" | "loading" | "failed"
+type ApiRequest = {
+  url: string
+  method: string
+  data?: object
+  headers?: ApiHeader
+}
+const API_LIST_ALL_ENTITY: ApiRequest = {
+  url: `${API_BASE_URL}/pesto-project`,
+  method: "GET",
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+}
+const API_CREATE_CONTENT_TYPE: ApiRequest = {
+  url: `${API_BASE_URL}/pesto-project`,
+  method: "POST",
+  data: {
+    name: "astroproject1",
+    description:
+      "un premier projet pesto sur une base de projet astro, mon site portfolio",
+    git_ssh_uri: "git@github.com:3forges/poc-redux-thunk.git",
+  },
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
 }
 
-const initialState: MongoDbState = {
-  value: "",
-  status: "idle",
-}
+//const API_GET_PROJECT_BY_NAME: ApiRequest = {}
+//const API_GET_PROJECT_BY_URI: ApiRequest = {}
+//const API_UPDATE_FROM_PROJECT_ID: ApiRequest = {}
+
+/*
+  req:
+    url: 
+      /pesto-project 
+      /pesto-project/name 
+      /pesto-project/uri 
+      /pesto-content-type 
+      /pesto-content-type/project 
+      /pesto-content
+    method: GET PUT DELETE POST
+    header: 'Accept: application/json' 'Content-Type: application/json'
+    data: {}
+*/
 
 type PestoContentTypeData = {
   _id: number
@@ -55,26 +76,37 @@ type GetPestoContentTypesResponse = {
   data: PestoContentTypeData[]
 }
 
-async function getPestoContentTypes(): Promise<
-  GetPestoContentTypesResponse | String
-> {
-  try {
-    // 👇️ const data: GetPestoContentTypesResponse
-    const { data, status } = await axios.get<GetPestoContentTypesResponse>(
-      "http://localhost:3000/pesto-content-type",
-      {/*
-        headers: {
-          Accept: "application/json",
-        },
-      */},
-    )
-    //console.log("JSON payload data is [GetPestoContentTypesResponse]: ")
-    //console.log(JSON.stringify(data, null, 4))
+export interface MongoDbState {
+  value: PestoContentTypeData
+  status: "idle" | "loading" | "failed"
+}
 
+const initialState: MongoDbState = {
+  value: {
+    _id: 0,
+    title: "",
+    description: "placeholder",
+    identifier: "",
+    createdAt: "",
+  },
+  status: "idle",
+}
+
+/*
+{ "name" : "astroproject2", "description" : "mon site portfoli2o", "git_ssh_uri" : "git@github.com:3forges/poc-redux-thunk2.git" }
+*/
+
+async function getPestoContentTypes(
+  req: ApiRequest,
+): Promise<GetPestoContentTypesResponse | String> {
+  try {
+    console.log(req.method)
+    // List all Entity instances
+    // 👇️ const data: GetPestoContentTypesResponse
+    const { data, status } = await axios<GetPestoContentTypesResponse>(req)
+    return data
     // 👇️ "response status is: 200"
     //console.log("response status is: ", status)
-
-    return data
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log("error message: ", error.message)
@@ -86,10 +118,11 @@ async function getPestoContentTypes(): Promise<
   }
 }
 
-export async function fetchPestoApi() {
-  const results = await getPestoContentTypes()
+export async function fetchPestoApi(req: ApiRequest) {
+  const results = await getPestoContentTypes(req)
   return JSON.stringify(results, null, 4)
 }
+
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
 // will call the thunk with the `dispatch` function as the first argument. Async
@@ -98,7 +131,20 @@ export async function fetchPestoApi() {
 export const requestMongoDdAsync = createAsyncThunk(
   "mongodb/request",
   async () => {
-    const response = await fetchPestoApi()
+    const response = await fetchPestoApi(API_LIST_ALL_ENTITY)
+    //console.log(`response :`, response)
+    //console.log(" >>>>>>>>>>> [requestMongoDdAsync] reponse: ", response)
+    return response
+  },
+)
+
+export const createContentTypeAsync = createAsyncThunk(
+  "mongodb/create",
+  async (data) => {
+    console.log(data.inputValue)
+    API_CREATE_CONTENT_TYPE.data = data.inputValue
+    console.log("data: ", API_CREATE_CONTENT_TYPE.data)
+    const response = await fetchPestoApi(API_CREATE_CONTENT_TYPE)
     console.log(`response :`, response)
     console.log(" >>>>>>>>>>> [requestMongoDdAsync] reponse: ", response)
     return response
@@ -123,14 +169,19 @@ export const mongodbSlice = createSlice({
       .addCase(requestMongoDdAsync.fulfilled, (state, action) => {
         state.status = "idle"
         console.log(
-          " PESTO REDUCER " + API_URL + " fetch fulfilled, payload: ",
+          " PESTO REDUCER " +
+            API_LIST_ALL_ENTITY.URL +
+            " fetch fulfilled, payload: ",
           action.payload,
         )
-        state.value = action.payload
+        state.value = JSON.parse(action.payload)
       })
       .addCase(requestMongoDdAsync.rejected, (state) => {
         state.status = "failed"
         console.log(" PESTO REDUCER requestMongoDdAsync failed")
+      })
+      .addCase(createContentTypeAsync.fulfilled, (state, action) => {
+        console.log(" PESTO REDUCER createContentTypeAsync succed")
       })
   },
 })
