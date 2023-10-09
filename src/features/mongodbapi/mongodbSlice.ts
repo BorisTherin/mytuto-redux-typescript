@@ -92,6 +92,10 @@ const initialState: MongoDbState = {
   status: "idle",
 }
 
+type postInputValueType = {
+  inputValue: object
+}
+
 /*
 { "name" : "astroproject2", "description" : "mon site portfoli2o", "git_ssh_uri" : "git@github.com:3forges/poc-redux-thunk2.git" }
 */
@@ -101,12 +105,10 @@ async function getPestoContentTypes(
 ): Promise<GetPestoContentTypesResponse | String> {
   try {
     console.log(req.method)
-    // List all Entity instances
+    // Apply REQUEST req
     // 👇️ const data: GetPestoContentTypesResponse
     const { data, status } = await axios<GetPestoContentTypesResponse>(req)
     return data
-    // 👇️ "response status is: 200"
-    //console.log("response status is: ", status)
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log("error message: ", error.message)
@@ -118,34 +120,29 @@ async function getPestoContentTypes(
   }
 }
 
+/*
 export async function fetchPestoApi(req: ApiRequest) {
   const results = await getPestoContentTypes(req)
   return JSON.stringify(results, null, 4)
 }
+*/
 
-// The function below is called a thunk and allows us to perform async logic. It
-// can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
-// will call the thunk with the `dispatch` function as the first argument. Async
-// code can then be executed and other actions can be dispatched. Thunks are
-// typically used to make async requests.
 export const requestMongoDdAsync = createAsyncThunk(
   "mongodb/request",
   async () => {
-    const response = await fetchPestoApi(API_LIST_ALL_ENTITY)
-    //console.log(`response :`, response)
-    //console.log(" >>>>>>>>>>> [requestMongoDdAsync] reponse: ", response)
-    return response
+    //const response = await fetchPestoApi(API_LIST_ALL_ENTITY)
+    const response = await getPestoContentTypes(API_LIST_ALL_ENTITY)
+    console.log(" >>>>>>>>>>> [requestMongoDdAsync] reponse: ", response)
+    return JSON.stringify(response, null, 4)
   },
 )
 
 export const createContentTypeAsync = createAsyncThunk(
   "mongodb/create",
-  async (data) => {
-    console.log(data.inputValue)
+  async (data: postInputValueType) => {
     API_CREATE_CONTENT_TYPE.data = data.inputValue
     console.log("data: ", API_CREATE_CONTENT_TYPE.data)
-    const response = await fetchPestoApi(API_CREATE_CONTENT_TYPE)
-    console.log(`response :`, response)
+    const response = await getPestoContentTypes(API_CREATE_CONTENT_TYPE)
     console.log(" >>>>>>>>>>> [requestMongoDdAsync] reponse: ", response)
     return response
   },
@@ -170,7 +167,7 @@ export const mongodbSlice = createSlice({
         state.status = "idle"
         console.log(
           " PESTO REDUCER " +
-            API_LIST_ALL_ENTITY.URL +
+            API_LIST_ALL_ENTITY.url +
             " fetch fulfilled, payload: ",
           action.payload,
         )

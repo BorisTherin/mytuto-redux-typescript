@@ -10,7 +10,9 @@ import styles from "../counter/Counter.module.css"
 export function Mongodb() {
   const input = JSON.stringify(useAppSelector(selectInput))
   const dispatch = useAppDispatch()
-  const [inputValue, setInputValue] = useState('{ "name" : "astroproject2", "description" : "mon site portfoli2o", "git_ssh_uri" : "git@github.com:3forges/poc-redux-thunk2.git" }')
+  const [inputValue, setInputValue] = useState(
+    '{ "name" : "astroproject2", "description" : "mon site portfoli2o", "git_ssh_uri" : "git@github.com:3forges/poc-redux-thunk2.git" }'
+  )
   // setInputValue(input)
 
   return (
@@ -40,7 +42,7 @@ export function Mongodb() {
       <button
         className={styles.button}
         aria-label="Create Content-Type"
-        onClick={() => dispatch(createContentTypeAsync({ inputValue }))}
+        onClick={() => dispatch(createContentTypeAsync({inputValue}))}
       >
         NEW CT
       </button>
