@@ -10,32 +10,56 @@ const API_PORT = "3000"
 const API_HOST = "localhost"
 const API_BASE_URL = `http://${API_HOST}:${API_PORT}`
 
+enum urls { // STRICT4HOOKS
+  PESTOPROJECT = `${API_BASE_URL}/pesto-project`,
+  PESTOPROJECTNAME = `${API_BASE_URL}/pesto-project/name`,
+  PESTOPROJECTURI = `${API_BASE_URL}/pesto-project/uri`,
+  PESTOCONTENTTYPE = `${API_BASE_URL}/pesto-content-type`,
+  PESTOCONTENTTYPEPROJECT = `${API_BASE_URL}/pesto-content-type/project`,
+  PESTOCONTENT = `${API_BASE_URL}/pesto-content`,
+}
+enum methods { // STRICT4METHODS
+  POST = "POST",
+  GET = "GET",
+}
+// TYPES POUR LA REQUETE AXIOS
 type ApiHeader = {
   Accept: string
   "Content-Type": string
 }
+type ApiData = {
+  name: string
+  description: string
+  git_ssh_uri: string
+}
+// AXIOS READY
 type ApiRequest = {
-  url: string
-  method: string
-  data?: object
+  url: urls
+  method: methods
+  data?: ApiData
   headers?: ApiHeader
 }
+// STRICT FROM UI (Mongodb.tsx buttons)
+type postInputValueType = {
+  inputValue: ApiData
+}
+
+// EVERY REQUEST
 const API_LIST_ALL_ENTITY: ApiRequest = {
-  url: `${API_BASE_URL}/pesto-project`,
-  method: "GET",
+  url: urls.PESTOPROJECT,
+  method: methods.GET,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
   },
 }
 const API_CREATE_CONTENT_TYPE: ApiRequest = {
-  url: `${API_BASE_URL}/pesto-project`,
-  method: "POST",
+  url: urls.PESTOPROJECT,
+  method: methods.POST,
   data: {
-    name: "astroproject1",
-    description:
-      "un premier projet pesto sur une base de projet astro, mon site portfolio",
-    git_ssh_uri: "git@github.com:3forges/poc-redux-thunk.git",
+    name: "",
+    description: "",
+    git_ssh_uri: "",
   },
   headers: {
     Accept: "application/json",
@@ -46,20 +70,6 @@ const API_CREATE_CONTENT_TYPE: ApiRequest = {
 //const API_GET_PROJECT_BY_NAME: ApiRequest = {}
 //const API_GET_PROJECT_BY_URI: ApiRequest = {}
 //const API_UPDATE_FROM_PROJECT_ID: ApiRequest = {}
-
-/*
-  req:
-    url: 
-      /pesto-project 
-      /pesto-project/name 
-      /pesto-project/uri 
-      /pesto-content-type 
-      /pesto-content-type/project 
-      /pesto-content
-    method: GET PUT DELETE POST
-    header: 'Accept: application/json' 'Content-Type: application/json'
-    data: {}
-*/
 
 type PestoContentTypeData = {
   _id: number
@@ -77,30 +87,24 @@ type GetPestoContentTypesResponse = {
 }
 
 export interface MongoDbState {
-  value: PestoContentTypeData
+  value: Array<object>
   status: "idle" | "loading" | "failed"
 }
 
 const initialState: MongoDbState = {
-  value: {
-    _id: 0,
-    title: "",
-    description: "placeholder",
-    identifier: "",
-    createdAt: "",
-  },
+  value: [
+    {
+      _id: 0,
+      title: "",
+      description: "placeholder",
+      identifier: "",
+      createdAt: "",
+    },
+  ],
   status: "idle",
 }
 
-type postInputValueType = {
-  inputValue: object
-}
-
-/*
-{ "name" : "astroproject2", "description" : "mon site portfoli2o", "git_ssh_uri" : "git@github.com:3forges/poc-redux-thunk2.git" }
-*/
-
-async function getPestoContentTypes(
+async function requestPestoContentTypes(
   req: ApiRequest,
 ): Promise<GetPestoContentTypesResponse | String> {
   try {
@@ -122,7 +126,7 @@ async function getPestoContentTypes(
 
 /*
 export async function fetchPestoApi(req: ApiRequest) {
-  const results = await getPestoContentTypes(req)
+  const results = await requestPestoContentTypes(req)
   return JSON.stringify(results, null, 4)
 }
 */
@@ -131,9 +135,10 @@ export const requestMongoDdAsync = createAsyncThunk(
   "mongodb/request",
   async () => {
     //const response = await fetchPestoApi(API_LIST_ALL_ENTITY)
-    const response = await getPestoContentTypes(API_LIST_ALL_ENTITY)
+    const response = await requestPestoContentTypes(API_LIST_ALL_ENTITY)
     console.log(" >>>>>>>>>>> [requestMongoDdAsync] reponse: ", response)
-    return JSON.stringify(response, null, 4)
+    // return JSON.stringify(response, null, 4)
+    return response
   },
 )
 
@@ -142,8 +147,9 @@ export const createContentTypeAsync = createAsyncThunk(
   async (data: postInputValueType) => {
     API_CREATE_CONTENT_TYPE.data = data.inputValue
     console.log("data: ", API_CREATE_CONTENT_TYPE.data)
-    const response = await getPestoContentTypes(API_CREATE_CONTENT_TYPE)
+    const response = await requestPestoContentTypes(API_CREATE_CONTENT_TYPE)
     console.log(" >>>>>>>>>>> [requestMongoDdAsync] reponse: ", response)
+    // return JSON.stringify(response, null, 4)
     return response
   },
 )
@@ -171,7 +177,7 @@ export const mongodbSlice = createSlice({
             " fetch fulfilled, payload: ",
           action.payload,
         )
-        state.value = JSON.parse(action.payload)
+        state.value = action.payload
       })
       .addCase(requestMongoDdAsync.rejected, (state) => {
         state.status = "failed"
@@ -186,6 +192,6 @@ export const mongodbSlice = createSlice({
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
-export const selectInput = (state: RootState) => state.mongodb.value
+export const listOutput = (state: RootState) => state.mongodb.value
 
 export default mongodbSlice.reducer
