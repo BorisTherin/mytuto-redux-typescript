@@ -1,22 +1,24 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { RootState } from "../../app/store"
 import axios from "axios"
 /* 
   FORKED FROM ../counter/conterSlice.ts IN ORDER TO MAKE MY 1ST PESTO-API REQUEST
 */
+/*
 const FRONT_DEV_PORT = "5173"
 const FRONT_DEV_HOST = "localhost"
+*/
 const API_PORT = "3000"
 const API_HOST = "localhost"
 const API_BASE_URL = `http://${API_HOST}:${API_PORT}`
 
 enum urls { // STRICT4HOOKS
   PESTOPROJECT = `${API_BASE_URL}/pesto-project`,
+  PESTOCONTENT = `${API_BASE_URL}/pesto-content`,
+  PESTOCONTENTTYPE = `${API_BASE_URL}/pesto-content-type`,
   PESTOPROJECTNAME = `${API_BASE_URL}/pesto-project/name`,
   PESTOPROJECTURI = `${API_BASE_URL}/pesto-project/uri`,
-  PESTOCONTENTTYPE = `${API_BASE_URL}/pesto-content-type`,
   PESTOCONTENTTYPEPROJECT = `${API_BASE_URL}/pesto-content-type/project`,
-  PESTOCONTENT = `${API_BASE_URL}/pesto-content`,
 }
 enum methods { // STRICT4METHODS
   POST = "POST",
@@ -146,10 +148,9 @@ export const createContentTypeAsync = createAsyncThunk(
   "mongodb/create",
   async (data: postInputValueType) => {
     API_CREATE_CONTENT_TYPE.data = data.inputValue
-    console.log("data: ", API_CREATE_CONTENT_TYPE.data)
+    // console.log("data: ", API_CREATE_CONTENT_TYPE.data)
     const response = await requestPestoContentTypes(API_CREATE_CONTENT_TYPE)
     console.log(" >>>>>>>>>>> [requestMongoDdAsync] reponse: ", response)
-    // return JSON.stringify(response, null, 4)
     return response
   },
 )
