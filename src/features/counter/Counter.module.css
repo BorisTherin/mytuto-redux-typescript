@@ -1,9 +1,3 @@
-.projects {
-  display: flex;
-  flex-direction:  column;
-  border: solid 1px;
-}
-
 .row {
   display: flex;
   align-items: center;
@@ -25,6 +19,11 @@
   padding-right: 16px;
   margin-top: 2px;
   font-family: "Courier New", Courier, monospace;
+}
+.projects {
+  display: flex;
+  flex-direction:  column;
+  border: solid 1px;
 }
 
 .button {

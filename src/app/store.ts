@@ -1,12 +1,9 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit"
-//import { getDefaultMiddleware } from "@reduxjs/toolkit"
-import counterReducer from "../features/counter/counterSlice"
-import mongodbReducer from "../features/mongodbapi/mongodbSlice"
+import pestoApiReducer from "../features/pestoApi/pestoApiSlice"
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
-    mongodb: mongodbReducer,
+    pestoApi: pestoApiReducer,
   },
 })
 
