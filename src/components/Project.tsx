@@ -50,7 +50,6 @@ export function Project(props: any) {
               className="button"
               aria-label="Edit"
               onClick={() => {
-
                 dispatch(requestPestoApiAsync(API_EDIT_ENTITY))
               }}
             >

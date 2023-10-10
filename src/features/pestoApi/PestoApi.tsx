@@ -68,7 +68,7 @@ export function PestoApi() {
           dispatch(requestPestoApiAsync(API_CREATE_CONTENT_TYPE))
         }}
       >
-        NEW CONTENT TYPE
+        NEW PROJECT
       </button>
       <hr />
       <button
