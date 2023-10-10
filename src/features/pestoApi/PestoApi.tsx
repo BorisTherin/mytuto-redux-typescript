@@ -12,7 +12,8 @@ import { Project } from "../../components/Project"
 
 // EVERY REQUEST IN AXIOS FORMAT
 const API_LIST_ALL_ENTITY: ApiRequest = {
-  url: urls.PESTOPROJECT,
+  baseURL: urls.PESTOPROJECT,
+  url: "",
   method: methods.GET,
   headers: {
     Accept: "application/json",
@@ -20,7 +21,8 @@ const API_LIST_ALL_ENTITY: ApiRequest = {
   },
 }
 const API_CREATE_CONTENT_TYPE: ApiRequest = {
-  url: urls.PESTOPROJECT,
+  baseURL: urls.PESTOPROJECT,
+  url: "",
   method: methods.POST,
   data: {
     name: "",
@@ -39,12 +41,11 @@ const API_CREATE_CONTENT_TYPE: ApiRequest = {
 
 export function PestoApi() {
   const requestOutput = useAppSelector(request_Output)
-  console.log("requestOutput: ", requestOutput)
+  // console.log("requestOutput: ", requestOutput)
   const dispatch = useAppDispatch()
   const [inputValue, setInputValue] = useState(
     '{ "name" : "astroproject2", "description" : "mon site portfoli2o", "git_ssh_uri" : "git@github.com:3forges/poc-redux-thunk2.git" }',
   )
-  // setInputValue(input)
 
   return (
     <div>

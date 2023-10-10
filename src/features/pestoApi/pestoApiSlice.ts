@@ -12,7 +12,7 @@ const API_PORT = "3000"
 const API_HOST = "localhost"
 const API_BASE_URL = `http://${API_HOST}:${API_PORT}`
 
-export enum urls { // STRICT4HOOKS
+export enum urls { // STRICT URLS/HOOKS
   PESTOPROJECT = `${API_BASE_URL}/pesto-project`,
   PESTOCONTENT = `${API_BASE_URL}/pesto-content`,
   PESTOCONTENTTYPE = `${API_BASE_URL}/pesto-content-type`,
@@ -20,10 +20,12 @@ export enum urls { // STRICT4HOOKS
   PESTOPROJECTURI = `${API_BASE_URL}/pesto-project/uri`,
   PESTOCONTENTTYPEPROJECT = `${API_BASE_URL}/pesto-content-type/project`,
 }
-export enum methods { // STRICT4METHODS
+export enum methods { // STRICT METHODS
   POST = "POST",
   GET = "GET",
   DELETE = "DELETE",
+  PUT = "PUT",
+  PATCH = "PATCH",
 }
 // TYPES POUR LA REQUETE AXIOS
 type ApiHeader = {
@@ -37,6 +39,7 @@ type ApiData = {
 }
 // AXIOS READY
 export type ApiRequest = {
+  baseURL: urls
   url: string
   method: methods
   data?: ApiData
@@ -46,9 +49,6 @@ export type ApiRequest = {
 type PestoContentTypeData = {
   _id: number
   title: string
-  // project_id: string
-  // frontmatter_schema: string
-  // frontmatter_format: string
   description: string
   identifier: string
   createdAt: string
@@ -98,7 +98,7 @@ export const requestPestoApiAsync = createAsyncThunk(
   "pestoApi/request",
   async (req: ApiRequest) => {
     let response = await requestPestoContentTypes(req)
-    console.log(" >>>>>>>>>>> [requestPestoApiAsync] reponse: ", response)
+    // console.log(" >>>>>>>>>>> [requestPestoApiAsync] reponse: ", response)
     // eslint-disable-next-line prettier/prettier
     if (typeof(response) === "string" ) response = ""
     return response

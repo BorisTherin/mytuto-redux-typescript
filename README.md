@@ -26,6 +26,9 @@ cd ../../mytuto-redux-typescript
 pnpm start
 ``` 
 
+# REFERENCES
+* AXIOS: https://axios-http.com/fr/docs/req_config
+
 # UTILS
 ```bash
 docker-compose logs -f
