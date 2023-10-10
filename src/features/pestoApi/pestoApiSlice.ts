@@ -23,6 +23,7 @@ export enum urls { // STRICT4HOOKS
 export enum methods { // STRICT4METHODS
   POST = "POST",
   GET = "GET",
+  DELETE = "DELETE",
 }
 // TYPES POUR LA REQUETE AXIOS
 type ApiHeader = {
@@ -36,7 +37,7 @@ type ApiData = {
 }
 // AXIOS READY
 export type ApiRequest = {
-  url: urls
+  url: string
   method: methods
   data?: ApiData
   headers?: ApiHeader
@@ -65,7 +66,7 @@ export interface PestoApiRequestState {
 const initialState: PestoApiRequestState = {
   value: [
     {
-      id: 0,
+      _id: 0,
       name: "",
       git_ssh_uri: "",
       createdAt: "",
@@ -94,7 +95,7 @@ async function requestPestoContentTypes(
 }
 
 export const requestPestoApiAsync = createAsyncThunk(
-  "mongodb/request",
+  "pestoApi/request",
   async (req: ApiRequest) => {
     let response = await requestPestoContentTypes(req)
     console.log(" >>>>>>>>>>> [requestPestoApiAsync] reponse: ", response)

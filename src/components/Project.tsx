@@ -15,10 +15,34 @@ const API_LIST_ALL_ENTITY: ApiRequest = {
     "Content-Type": "application/json",
   },
 }
+
+const API_EDIT_ENTITY: ApiRequest = {
+  url: urls.PESTOPROJECT,
+  method: methods.POST,
+  data: {
+    name: "",
+    description: "",
+    git_ssh_uri: "",
+  },
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+}
+
+const API_DELETE_ENTITY: ApiRequest = {
+  url: urls.PESTOPROJECT,
+  method: methods.DELETE,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+}
+
 export function Project(props: any) {
-  //console.log("props: ", props)
+  console.log("props: ", props)
   const dispatch = useAppDispatch()
-  if (props.outputs && props.outputs[0].id !== 0)
+  if (props.outputs && props.outputs[0] && props.outputs[0]._id !== 0)
     return props.outputs.map((item: any) => {
       return (
         <div key={item._id}>
@@ -34,18 +58,21 @@ export function Project(props: any) {
             <button
               className="button"
               aria-label="Edit"
-              onClick={() =>
-                dispatch(requestPestoApiAsync(API_LIST_ALL_ENTITY))
-              }
+              onClick={() => {
+
+                dispatch(requestPestoApiAsync(API_EDIT_ENTITY))
+              }}
             >
               Edit
             </button>
             <button
               className="button"
               aria-label="Edit"
-              onClick={() =>
-                dispatch(requestPestoApiAsync(API_LIST_ALL_ENTITY))
-              }
+              onClick={() => {
+                const req = { ...API_DELETE_ENTITY }
+                req.url = API_DELETE_ENTITY.url + "/" + item._id
+                dispatch(requestPestoApiAsync(req))
+              }}
             >
               Remove
             </button>
