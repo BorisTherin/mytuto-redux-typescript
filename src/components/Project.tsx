@@ -7,15 +7,6 @@ import {
 } from "../features/pestoApi/pestoApiSlice"
 import "./project.css"
 
-const API_LIST_ALL_ENTITY: ApiRequest = {
-  url: urls.PESTOPROJECT,
-  method: methods.GET,
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
-}
-
 const API_EDIT_ENTITY: ApiRequest = {
   url: urls.PESTOPROJECT,
   method: methods.POST,
