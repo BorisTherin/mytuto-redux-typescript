@@ -1,14 +1,15 @@
-import { useState } from "react"
-import { useAppDispatch } from "../app/hooks"
+// import { useState } from "react"
+import { useAppDispatch /*, useAppSelector*/ } from "../app/hooks"
 import {
   requestPestoApiAsync,
   ApiRequest,
+  /*request_Output,*/
   urls,
   methods,
 } from "../features/pestoApi/pestoApiSlice"
 import "./project.css"
 
-const API_EDIT_ENTITY: ApiRequest = {
+const API_UPDATE_FROM_PROJECT_ID: ApiRequest = {
   baseURL: urls.PESTOPROJECT,
   url: "",
   method: methods.POST,
@@ -34,16 +35,14 @@ const API_DELETE_ENTITY: ApiRequest = {
 }
 
 export function Project(props: any) {
-  // console.log("props: ", props)
+  //const requestOutput: any = useAppSelector(request_Output)
   const dispatch = useAppDispatch()
   //const [values, setValues] = useState(props.outputs)
-  //if (props.outputs[0]._id !== 0) setValues(props.outputs)
 
   if (props.outputs && props.outputs[0] && props.outputs[0]._id !== 0) {
-    //setValues(props.outputs)
     return props.outputs.map((item: any, index: number) => {
       return (
-        <div key={item._id}>
+        <div key={item._id} id={"source" + index}>
           <div className="card">
             <div>_id:{item._id}</div>
             <div>name: {item.name}</div>
@@ -53,11 +52,12 @@ export function Project(props: any) {
             <div>description: {item.description}</div>
             {/*
             <textarea
+              id={source_" + item._id }
               rows={5}
               cols={80}
               value={JSON.stringify(values[index])}
               onChange={(e) => setValues([ ...values.splice(index, 1, JSON.parse(e.target.value))])}
-            />
+            />  
             */}
           </div>
           <div className="control">
@@ -65,7 +65,9 @@ export function Project(props: any) {
               className="button"
               aria-label="Edit"
               onClick={() => {
-                const req = { ...API_DELETE_ENTITY }
+                const req = { ...API_UPDATE_FROM_PROJECT_ID }
+                const data: any = document.getElementById("source_" + item._id)
+                req.data = JSON.parse(data.value)
                 dispatch(requestPestoApiAsync(req))
               }}
             >

@@ -32,7 +32,7 @@ type ApiHeader = {
   Accept: string
   "Content-Type": string
 }
-type ApiData = {
+export type ApiData = {
   name: string
   description: string
   git_ssh_uri: string

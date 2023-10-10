@@ -9,6 +9,7 @@ import {
 } from "./pestoApiSlice"
 import "../../App.css"
 import { Project } from "../../components/Project"
+import { randomProject } from "../../randomProject" // DEVMODE¸USEFULL
 
 // EVERY REQUEST IN AXIOS FORMAT
 const API_LIST_ALL_ENTITY: ApiRequest = {
@@ -43,9 +44,7 @@ export function PestoApi() {
   const requestOutput = useAppSelector(request_Output)
   // console.log("requestOutput: ", requestOutput)
   const dispatch = useAppDispatch()
-  const [inputValue, setInputValue] = useState(
-    '{ "name" : "astroproject2", "description" : "mon site portfoli2o", "git_ssh_uri" : "git@github.com:3forges/poc-redux-thunk2.git" }',
-  )
+  const [inputValue, setInputValue] = useState(randomProject())
 
   return (
     <div>
@@ -55,7 +54,6 @@ export function PestoApi() {
           id="source"
           cols={80}
           rows={5}
-          /* FIX store effiecient : value={inputValue} to value={input} aka real store hook */
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
         />
@@ -67,6 +65,7 @@ export function PestoApi() {
           const data: any = document.getElementById("source")
           API_CREATE_CONTENT_TYPE.data = JSON.parse(data.value)
           dispatch(requestPestoApiAsync(API_CREATE_CONTENT_TYPE))
+          setInputValue(randomProject())
         }}
       >
         NEW PROJECT
