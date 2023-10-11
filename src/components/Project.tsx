@@ -2,14 +2,14 @@
 import { useAppDispatch /*, useAppSelector*/ } from "../app/hooks"
 import {
   requestPestoApiAsync,
-  ApiRequest,
+  AxiosRequest,
   /*request_Output,*/
   urls,
   methods,
 } from "../features/pestoApi/pestoApiSlice"
 import "./project.css"
 
-const API_UPDATE_FROM_PROJECT_ID: ApiRequest = {
+const API_UPDATE_FROM_PROJECT_ID: AxiosRequest = {
   baseURL: urls.PESTOPROJECT,
   url: "",
   method: methods.POST,
@@ -24,7 +24,7 @@ const API_UPDATE_FROM_PROJECT_ID: ApiRequest = {
   },
 }
 
-const API_DELETE_ENTITY: ApiRequest = {
+const API_DELETE_ENTITY: AxiosRequest = {
   baseURL: urls.PESTOPROJECT,
   url: "",
   method: methods.DELETE,

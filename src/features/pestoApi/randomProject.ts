@@ -1,4 +1,4 @@
-import { ApiData } from "./features/pestoApi/pestoApiSlice"
+import { PestoContentTypeData } from "./pestoApiSlice"
 /**
  * FEED RANDOM WORD FOR NEW REQUEST VARS FEED
  * @returns string (length 5 to 10)
@@ -39,19 +39,10 @@ export function randomProject() {
     }
     return word
   }
-  return (
-    '{ "name" : "' +
-    randomWords() +
-    '" , "description" : "' +
-    randomWords() +
-    " " +
-    randomWords() +
-    " " +
-    randomWords() +
-    '" , "git_ssh_uri" : "git@github.com:' +
-    randomWords() +
-    "/" +
-    randomWords() +
-    '" }'
-  )
+  const ret: PestoContentTypeData = {
+    name: randomWords(),
+    description: randomWords() + " " + randomWords() + " " + randomWords(),
+    git_ssh_uri: "git@github.com:" + randomWords() + "/" + randomWords(),
+  }
+  return JSON.stringify(ret)
 }

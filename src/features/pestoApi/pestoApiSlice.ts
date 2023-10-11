@@ -1,13 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { RootState } from "../../app/store"
 import axios from "axios"
-/* 
-  FORKED FROM ../counter/conterSlice.ts IN ORDER TO MAKE MY 1ST PESTO-API REQUEST
-*/
-/*
-const FRONT_DEV_PORT = "5173"
-const FRONT_DEV_HOST = "localhost"
-*/
+
 const API_PORT = "3000"
 const API_HOST = "localhost"
 const API_BASE_URL = `http://${API_HOST}:${API_PORT}`
@@ -32,79 +26,72 @@ type ApiHeader = {
   Accept: string
   "Content-Type": string
 }
-export type ApiData = {
+
+export type PestoContentTypeData = {
+  _id?: number
   name: string
-  description: string
   git_ssh_uri: string
+  description: string
+  title?: string
+  createdAt?: string
+  identifier?: string
+  __v?: number
 }
+
+type PestoAnotherTypeData = {
+  _id: number
+  data: object
+}
+
 // AXIOS READY
-export type ApiRequest = {
+export type AxiosRequest = {
   baseURL: urls
   url: string
   method: methods
-  data?: ApiData
+  data?: PestoContentTypeData | PestoAnotherTypeData
   headers?: ApiHeader
 }
 
-type PestoContentTypeData = {
-  _id: number
-  title: string
-  description: string
-  identifier: string
-  createdAt: string
-}
-
-type GetPestoContentTypesResponse = {
-  data: PestoContentTypeData[]
-}
-
-export interface PestoApiRequestState {
-  value: Array<object>
+interface PestoApiRequestState {
+  value?: PestoContentTypeData[] | PestoAnotherTypeData[]
   status: "idle" | "loading" | "failed"
+  feedback: string
 }
 
 const initialState: PestoApiRequestState = {
-  value: [
-    {
-      _id: 0,
-      name: "",
-      git_ssh_uri: "",
-      createdAt: "",
-      __v: 0,
-      description: "",
-    },
-  ],
+  value: [],
   status: "idle",
+  feedback: "",
 }
 
-async function requestPestoContentTypes(
-  req: ApiRequest,
-): Promise<GetPestoContentTypesResponse | String | object[]> {
-  try {
-    const { data, status } = await axios<GetPestoContentTypesResponse>(req)
-    return data
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.log("error message: ", error.message)
-      return error.message
-    } else {
-      console.log("unexpected error: ", error)
-      return "An unexpected error occurred"
-    }
-  }
+const ERROR_FEEDBACK: PestoApiRequestState = {
+  status: "failed",
+  feedback: "",
 }
 
+/**
+ *  YOUR METHOD FOR YOUR PAGES
+ *  < ... onclick="requestPestoApiAsync(YOUR_REQUEST)">
+ */
 export const requestPestoApiAsync = createAsyncThunk(
   "pestoApi/request",
-  async (req: ApiRequest) => {
-    let response = await requestPestoContentTypes(req)
-    // console.log(" >>>>>>>>>>> [requestPestoApiAsync] reponse: ", response)
-    // eslint-disable-next-line prettier/prettier
-    if (typeof(response) === "string" ) response = ""
-    return response
+  async (req: AxiosRequest): Promise<PestoApiRequestState> => {
+    try {
+      const { data } = await axios<PestoContentTypeData[]>(req)
+      return { value: data, status: "loading", feedback: "" }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        ERROR_FEEDBACK.feedback = "Axios Error: " + error.message
+        return ERROR_FEEDBACK
+      } else {
+        ERROR_FEEDBACK.feedback = "An unexpected error occurred: " + error
+        return ERROR_FEEDBACK
+      }
+    }
   },
 )
 
+// PESTO REDUCERS
 export const pestoApiSlice = createSlice({
   name: "pestoApi",
   initialState,
@@ -120,15 +107,19 @@ export const pestoApiSlice = createSlice({
       .addCase(requestPestoApiAsync.fulfilled, (state, action) => {
         state.status = "idle"
         console.log(" PESTO REDUCER fetch fulfilled, payload: ", action.payload)
-        state.value = action.payload
+        state.value = action.payload.value
+        state.feedback = action.payload.feedback
       })
       .addCase(requestPestoApiAsync.rejected, (state) => {
         state.status = "failed"
+        state.feedback = "rejected"
         console.log(" PESTO REDUCER requestPestoApiAsync failed")
       })
   },
 })
 
+// YOUR STORE FOR ANY PAGES
+export const request_Feedback = (state: RootState) => state.pestoApi.feedback
 export const request_Output = (state: RootState) => state.pestoApi.value
 
 export default pestoApiSlice.reducer

@@ -3,16 +3,17 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks"
 import {
   requestPestoApiAsync,
   request_Output,
+  request_Feedback,
   urls,
   methods,
-  ApiRequest,
+  AxiosRequest,
 } from "./pestoApiSlice"
 import "../../App.css"
 import { Project } from "../../components/Project"
-import { randomProject } from "../../randomProject" // DEVMODE¸USEFULL
+import { randomProject } from "./randomProject" // DEVMODE USEFULL
 
 // EVERY REQUEST IN AXIOS FORMAT
-const API_LIST_ALL_ENTITY: ApiRequest = {
+const API_LIST_ALL_ENTITY: AxiosRequest = {
   baseURL: urls.PESTOPROJECT,
   url: "",
   method: methods.GET,
@@ -21,7 +22,7 @@ const API_LIST_ALL_ENTITY: ApiRequest = {
     "Content-Type": "application/json",
   },
 }
-const API_CREATE_CONTENT_TYPE: ApiRequest = {
+const API_CREATE_CONTENT_TYPE: AxiosRequest = {
   baseURL: urls.PESTOPROJECT,
   url: "",
   method: methods.POST,
@@ -36,12 +37,13 @@ const API_CREATE_CONTENT_TYPE: ApiRequest = {
   },
 }
 
-//const API_GET_PROJECT_BY_NAME: ApiRequest = {}
-//const API_GET_PROJECT_BY_URI: ApiRequest = {}
-//const API_UPDATE_FROM_PROJECT_ID: ApiRequest = {}
+//const API_GET_PROJECT_BY_NAME: AxiosRequest = {}
+//const API_GET_PROJECT_BY_URI: AxiosRequest = {}
+//const API_UPDATE_FROM_PROJECT_ID: AxiosRequest = {}
 
 export function PestoApi() {
   const requestOutput = useAppSelector(request_Output)
+  const requestFeedback = useAppSelector(request_Feedback)
   // console.log("requestOutput: ", requestOutput)
   const dispatch = useAppDispatch()
   const [inputValue, setInputValue] = useState(randomProject())
@@ -49,6 +51,7 @@ export function PestoApi() {
   return (
     <div>
       <div>
+        <div>Feed-Back: {requestFeedback}</div>
         <br />
         <textarea
           id="source"
