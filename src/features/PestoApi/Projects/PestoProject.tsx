@@ -68,8 +68,10 @@ export function PestoProject() {
         onClick={() => {
           const data: any = document.getElementById("source")
           API_CREATE_CONTENT_TYPE.data = JSON.parse(data.value)
-          dispatch(requestPestoApiAsync(API_CREATE_CONTENT_TYPE))
+          ;async () =>
+            await dispatch(requestPestoApiAsync(API_CREATE_CONTENT_TYPE))
           setInputValue(randomProject())
+          dispatch(requestPestoApiAsync(API_LIST_ALL_ENTITY))
         }}
       >
         NEW PROJECT
