@@ -27,7 +27,7 @@ export enum methods { // STRICT METHODS
   PATCH = "PATCH",
 }
 // PESTO DATA TYPES
-export type PestoContentTypeData = {
+export type PestoProjectApiEntity = {
   _id?: number
   name: string
   git_ssh_uri: string
@@ -48,13 +48,13 @@ export type AxiosRequest = {
   baseURL: urls
   url?: string
   method: methods
-  data?: PestoContentTypeData | PestoAnotherTypeData
+  data?: PestoProjectApiEntity | PestoAnotherTypeData
   headers?: ApiHeader
 }
 
 // PESTO REQUEST STATE
 interface PestoApiRequestState {
-  value?: PestoContentTypeData[] | PestoAnotherTypeData[]
+  value?: PestoProjectApiEntity[] | PestoAnotherTypeData[]
   status: "idle" | "loading" | "failed"
   feedback: string
 }
@@ -79,7 +79,7 @@ export const requestPestoApiAsync = createAsyncThunk(
   async (req: AxiosRequest): Promise<PestoApiRequestState> => {
     try {
       const { data } = await axios<
-        PestoContentTypeData[] | PestoAnotherTypeData[]
+        PestoProjectApiEntity[] | PestoAnotherTypeData[]
       >(req)
       return {
         value: data,

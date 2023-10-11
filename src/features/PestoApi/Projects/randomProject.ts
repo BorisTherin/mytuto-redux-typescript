@@ -1,4 +1,4 @@
-import { PestoContentTypeData } from "./pestoProjectSlice"
+import { PestoProjectApiEntity } from "./pestoProjectSlice"
 /**
  * FEED RANDOM WORD FOR NEW REQUEST VARS FEED
  * @returns string (length 5 to 10)
@@ -39,7 +39,7 @@ export function randomProject() {
     }
     return word
   }
-  const ret: PestoContentTypeData = {
+  const ret: PestoProjectApiEntity = {
     name: randomWords(),
     description: randomWords() + " " + randomWords() + " " + randomWords(),
     git_ssh_uri: "git@github.com:" + randomWords() + "/" + randomWords(),
