@@ -9,6 +9,14 @@ import {
 } from "../features/PestoApi/Projects/pestoProjectSlice"
 import "./project.css"
 
+const API_LIST_ALL_ENTITY: AxiosRequest = {
+  baseURL: urls.PESTOPROJECT,
+  method: methods.GET,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+}
 const API_UPDATE_FROM_PROJECT_ID: AxiosRequest = {
   baseURL: urls.PESTOPROJECT,
   url: "",
@@ -76,10 +84,11 @@ export function Project(props: any) {
             <button
               className="button"
               aria-label="Edit"
-              onClick={() => {
+              onClick={async () => {
                 const req = { ...API_DELETE_ENTITY }
                 req.url = "/" + item._id
-                dispatch(requestPestoApiAsync(req))
+                await dispatch(requestPestoApiAsync(req))
+                dispatch(requestPestoApiAsync(API_LIST_ALL_ENTITY))
               }}
             >
               Remove

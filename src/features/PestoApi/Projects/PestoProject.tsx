@@ -65,11 +65,10 @@ export function PestoProject() {
       <button
         className="button"
         aria-label="Create Content-Type"
-        onClick={() => {
+        onClick={async () => {
           const data: any = document.getElementById("source")
           API_CREATE_CONTENT_TYPE.data = JSON.parse(data.value)
-          ;async () =>
-            await dispatch(requestPestoApiAsync(API_CREATE_CONTENT_TYPE))
+          await dispatch(requestPestoApiAsync(API_CREATE_CONTENT_TYPE))
           setInputValue(randomProject())
           dispatch(requestPestoApiAsync(API_LIST_ALL_ENTITY))
         }}
