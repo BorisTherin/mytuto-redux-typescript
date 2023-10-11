@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAppSelector, useAppDispatch } from "../../../app/hooks"
 import {
   requestPestoApiAsync,
@@ -41,6 +41,9 @@ export function PestoProject() {
   const [inputValue, setInputValue] = useState(randomProject())
   //dispatch(requestPestoApiAsync(API_LIST_ALL_ENTITY))
 
+  useEffect(() => {
+    dispatch(requestPestoApiAsync(API_LIST_ALL_ENTITY))
+  }, [])
   return (
     <div>
       <div className="feedback">
