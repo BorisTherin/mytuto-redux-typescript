@@ -6,6 +6,11 @@ const API_PORT = "3000"
 const API_HOST = "localhost"
 const API_BASE_URL = `http://${API_HOST}:${API_PORT}`
 
+// TYPES POUR LA REQUETE AXIOS
+type ApiHeader = {
+  Accept: string
+  "Content-Type": string
+}
 export enum urls { // STRICT URLS/HOOKS
   PESTOPROJECT = `${API_BASE_URL}/pesto-project`,
   PESTOCONTENT = `${API_BASE_URL}/pesto-content`,
@@ -21,12 +26,7 @@ export enum methods { // STRICT METHODS
   PUT = "PUT",
   PATCH = "PATCH",
 }
-// TYPES POUR LA REQUETE AXIOS
-type ApiHeader = {
-  Accept: string
-  "Content-Type": string
-}
-
+// PESTO DATA TYPES
 export type PestoContentTypeData = {
   _id?: number
   name: string
@@ -43,7 +43,7 @@ type PestoAnotherTypeData = {
   data: object
 }
 
-// AXIOS READY
+// AXIOS REQUEST READY
 export type AxiosRequest = {
   baseURL: urls
   url: string
@@ -52,6 +52,7 @@ export type AxiosRequest = {
   headers?: ApiHeader
 }
 
+// PESTO REQUEST STATE
 interface PestoApiRequestState {
   value?: PestoContentTypeData[] | PestoAnotherTypeData[]
   status: "idle" | "loading" | "failed"
@@ -71,13 +72,15 @@ const ERROR_FEEDBACK: PestoApiRequestState = {
 
 /**
  *  YOUR METHOD FOR YOUR PAGES
- *  < ... onclick="requestPestoApiAsync(YOUR_REQUEST)">
+ *  use `< ... onclick={dispatch(requestPestoApiAsync(YOUR_REQUEST))}>`
  */
 export const requestPestoApiAsync = createAsyncThunk(
   "pestoApi/request",
   async (req: AxiosRequest): Promise<PestoApiRequestState> => {
     try {
-      const { data } = await axios<PestoContentTypeData[]>(req)
+      const { data } = await axios<
+        PestoContentTypeData[] | PestoAnotherTypeData[]
+      >(req)
       return { value: data, status: "loading", feedback: "" }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -118,7 +121,10 @@ export const pestoApiSlice = createSlice({
   },
 })
 
-// YOUR STORE FOR ANY PAGES
+/**
+ *  YOUR STORE FOR ANY PAGES
+ *  use  `const maVar = useAppSelector(ROOSTATE VAR)`
+ */
 export const request_Feedback = (state: RootState) => state.pestoApi.feedback
 export const request_Output = (state: RootState) => state.pestoApi.value
 
