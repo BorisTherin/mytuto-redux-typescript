@@ -114,7 +114,7 @@ export const requestPestoApiAsync = createAsyncThunk(
 
   The reducer argument is passed to createReducer().
  */
-export const pestoApiSlice = createSlice({
+export const pestoProjectSlice = createSlice({
   name: "pestoApi",
   initialState,
   reducers: {
@@ -147,4 +147,4 @@ export const pestoApiSlice = createSlice({
 export const request_Feedback = (state: RootState) => state.pestoApi.feedback
 export const request_Output = (state: RootState) => state.pestoApi.value
 
-export default pestoApiSlice.reducer
+export default pestoProjectSlice.reducer

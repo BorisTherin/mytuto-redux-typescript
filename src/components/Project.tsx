@@ -6,7 +6,7 @@ import {
   /*request_Output,*/
   urls,
   methods,
-} from "../features/pestoApi/pestoApiSlice"
+} from "../features/pestoApi/pestoProjectSlice"
 import "./project.css"
 
 const API_UPDATE_FROM_PROJECT_ID: AxiosRequest = {

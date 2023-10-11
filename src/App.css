@@ -1,6 +1,6 @@
 .projects {
   display: flex;
-  flex-direction:  column;
+  flex-direction: column;
   border: solid 1px;
 }
 
@@ -20,11 +20,15 @@
   transition: all 0.15s;
 }
 
-span { 
-  font-size: 18px; 
-  display: block;
+.feedback {
+  margin-top: 10px;
+  background: #535353;
+  color: #fff;
   text-align: left;
+  padding: 5px;
+  font-size: 18px;
 }
+
 .App {
   text-align: center;
 }
@@ -45,7 +49,7 @@ span {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   font-size: calc(10px + 2vmin);
 }
 

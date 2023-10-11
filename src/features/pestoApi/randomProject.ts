@@ -1,4 +1,4 @@
-import { PestoContentTypeData } from "./pestoApiSlice"
+import { PestoContentTypeData } from "./pestoProjectSlice"
 /**
  * FEED RANDOM WORD FOR NEW REQUEST VARS FEED
  * @returns string (length 5 to 10)
