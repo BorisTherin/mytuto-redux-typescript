@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { RootState } from "../../app/store"
+import { RootState } from "../../../app/store"
 import axios from "axios"
 
 const API_PORT = "3000"

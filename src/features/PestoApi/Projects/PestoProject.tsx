@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useAppSelector, useAppDispatch } from "../../app/hooks"
+import { useAppSelector, useAppDispatch } from "../../../app/hooks"
 import {
   requestPestoApiAsync,
   request_Output,
@@ -8,8 +8,8 @@ import {
   methods,
   AxiosRequest,
 } from "./pestoProjectSlice"
-import "../../App.css"
-import { Project } from "../../components/Project"
+import "../../../App.css"
+import { Project } from "../../../components/Project"
 import { randomProject } from "./randomProject" // DEVMODE USEFULL
 
 // EVERY REQUEST IN AXIOS FORMAT
@@ -39,6 +39,7 @@ export function PestoProject() {
   const requestFeedback = useAppSelector(request_Feedback)
   const dispatch = useAppDispatch()
   const [inputValue, setInputValue] = useState(randomProject())
+  //dispatch(requestPestoApiAsync(API_LIST_ALL_ENTITY))
 
   return (
     <div>
