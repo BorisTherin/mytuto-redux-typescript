@@ -13,7 +13,7 @@ export function Mongodb() {
       <button
         className={styles.button}
         aria-label="Decrement value"
-        onClick={() => dispatch(requestMongoDdAsync())}
+        onClick={() => dispatch(requestMongoDdAsync(), )}
       >
         Get
       </button>
