@@ -1,11 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../../app/store"
-
+import axios from "axios"
 /* 
   FORKED FROM ../counter/conterSlice.ts IN ORDER TO MAKE MY 1ST PESTO-API REQUEST
 */
-const API_URL = "http://localhost:3000/pesto-content-type"
-
+const FRONT_DEV_PORT = "5173"
+const FRONT_DEV_HOST = "localhost"
+const API_PORT = "3000"
+const API_HOST = "localhost"
+const API_URL = `http://${API_HOST}:${API_PORT}/pesto-content-type`
 /* schema mongodb
 [
   {
@@ -42,27 +45,88 @@ const initialState: MongoDbState = {
   },
   status: "idle",
 }
+type PestoContentTypeData = {
+  _id: number
+  title: string
+  // project_id: string
+  // frontmatter_schema: string
+  // frontmatter_format: string
+  description: string
+  identifier: string
+  createdAt: string
+}
 
+type GetPestoContentTypesResponse = {
+  data: PestoContentTypeData[]
+}
+
+async function getPestoContentTypes(): Promise<
+  GetPestoContentTypesResponse | String
+> {
+  try {
+    // 👇️ const data: GetPestoContentTypesResponse
+    const { data, status } = await axios.get<GetPestoContentTypesResponse>(
+      // "https://reqres.in/api/users",
+      "http://localhost:3000/pesto-content-type",
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      },
+    )
+    console.log("JSON payload data is [GetPestoContentTypesResponse]: ")
+    console.log(JSON.stringify(data, null, 4))
+
+    // 👇️ "response status is: 200"
+    console.log("response status is: ", status)
+
+    return data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log("error message: ", error.message)
+      return error.message
+    } else {
+      console.log("unexpected error: ", error)
+      return "An unexpected error occurred"
+    }
+  }
+}
+
+export async function fetchPestoApi() {
+  const options: object = {
+    method: "GET",
+    mode: "no-cors",
+  }
+  const results = await getPestoContentTypes()
+  // const response = await fetch(API_URL, options)
+  return JSON.stringify(results, null, 4)
+}
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
 // will call the thunk with the `dispatch` function as the first argument. Async
 // code can then be executed and other actions can be dispatched. Thunks are
 // typically used to make async requests.
 export const requestMongoDdAsync = createAsyncThunk(
-  "mongodb/request",
+  "bernard/minet",
   async () => {
     const options: object = {
       method: "GET",
       mode: "no-cors",
     }
-    const response = await fetch(API_URL, options)
+    // const response = await fetch(API_URL, options)
+    const response = await fetchPestoApi()
+
+    // console.log(`response :`, response)
+    /*
     if (response && !response.ok) {
       console.log("response.ok = false ")
     }
+    */
     //const json: any = await response.json()
     //console.log("json(): ", json)
-    console.log("reponse: ", response)
-    return JSON.stringify(response)
+    console.log(" >>>>>>>>>>> [requestMongoDdAsync] reponse: ", response)
+    // return JSON.stringify(response)
+    return response
   },
 )
 
@@ -77,12 +141,13 @@ export const mongodbSlice = createSlice({
     builder
       .addCase(requestMongoDdAsync.pending, (state) => {
         state.status = "loading"
-        console.log("requestMongoDdAsync loading")
+        console.log(" PESTO REDUCER requestMongoDdAsync loading")
       })
       .addCase(requestMongoDdAsync.fulfilled, (state, action) => {
         state.status = "idle"
         console.log(API_URL + " fetch fulfilled, payload: ", action.payload)
-        state.value = JSON.parse(action.payload)
+        // state.value = JSON.parse(action.payload)
+        // state.value = action.payload
       })
       .addCase(requestMongoDdAsync.rejected, (state) => {
         state.status = "failed"
