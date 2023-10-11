@@ -51,7 +51,10 @@ export function PestoApi() {
   return (
     <div>
       <div>
-        <div>Feed-Back: {requestFeedback}</div>
+        <span>
+          Feed-Back:
+          <br /> {requestFeedback}
+        </span>
         <br />
         <textarea
           id="source"

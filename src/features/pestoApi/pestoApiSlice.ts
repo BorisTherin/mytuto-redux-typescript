@@ -81,7 +81,11 @@ export const requestPestoApiAsync = createAsyncThunk(
       const { data } = await axios<
         PestoContentTypeData[] | PestoAnotherTypeData[]
       >(req)
-      return { value: data, status: "loading", feedback: "" }
+      return {
+        value: data,
+        status: "loading",
+        feedback: "succes: " + req.method + " " + req.baseURL + "/" + req.url,
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         ERROR_FEEDBACK.feedback = "Axios Error: " + error.message
