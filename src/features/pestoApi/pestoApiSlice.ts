@@ -46,7 +46,7 @@ type PestoAnotherTypeData = {
 // AXIOS REQUEST READY
 export type AxiosRequest = {
   baseURL: urls
-  url: string
+  url?: string
   method: methods
   data?: PestoContentTypeData | PestoAnotherTypeData
   headers?: ApiHeader
@@ -84,7 +84,13 @@ export const requestPestoApiAsync = createAsyncThunk(
       return {
         value: data,
         status: "loading",
-        feedback: "succes: " + req.method + " " + req.baseURL + "/" + req.url,
+        feedback:
+          "succes: " +
+          req.method +
+          " " +
+          req.baseURL +
+          "/" +
+          (req.url ? req.url : ""),
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -98,7 +104,16 @@ export const requestPestoApiAsync = createAsyncThunk(
   },
 )
 
-// PESTO REDUCERS
+/*
+  PESTO REDUCERS
+  
+  A function that accepts an initial state, 
+  an object full of reducer functions, 
+  and a "slice name", and automatically generates action creators and 
+  action types that correspond to the reducers and state.
+
+  The reducer argument is passed to createReducer().
+ */
 export const pestoApiSlice = createSlice({
   name: "pestoApi",
   initialState,

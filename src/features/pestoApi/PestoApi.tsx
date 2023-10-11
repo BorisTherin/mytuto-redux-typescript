@@ -15,7 +15,6 @@ import { randomProject } from "./randomProject" // DEVMODE USEFULL
 // EVERY REQUEST IN AXIOS FORMAT
 const API_LIST_ALL_ENTITY: AxiosRequest = {
   baseURL: urls.PESTOPROJECT,
-  url: "",
   method: methods.GET,
   headers: {
     Accept: "application/json",
@@ -24,13 +23,7 @@ const API_LIST_ALL_ENTITY: AxiosRequest = {
 }
 const API_CREATE_CONTENT_TYPE: AxiosRequest = {
   baseURL: urls.PESTOPROJECT,
-  url: "",
   method: methods.POST,
-  data: {
-    name: "",
-    description: "",
-    git_ssh_uri: "",
-  },
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -44,17 +37,18 @@ const API_CREATE_CONTENT_TYPE: AxiosRequest = {
 export function PestoApi() {
   const requestOutput = useAppSelector(request_Output)
   const requestFeedback = useAppSelector(request_Feedback)
-  // console.log("requestOutput: ", requestOutput)
   const dispatch = useAppDispatch()
   const [inputValue, setInputValue] = useState(randomProject())
 
   return (
     <div>
+      <span>
+        <b>
+          <u>Feed-Back:</u>
+        </b>
+        <br /> {requestFeedback}
+      </span>
       <div>
-        <span>
-          Feed-Back:
-          <br /> {requestFeedback}
-        </span>
         <br />
         <textarea
           id="source"
