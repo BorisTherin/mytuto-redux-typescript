@@ -57,20 +57,20 @@ export type AxiosRequest = {
 interface PestoApiRequestState {
   value?: PestoProjectApiEntity[] | PestoAnotherTypeData[]
   status: "idle" | "loading" | "failed"
-  feedback: string
-  feedbacks?: string[]
+
+  feedbacks: string[]
 }
 
 const initialState: PestoApiRequestState = {
   value: [],
   status: "idle",
-  feedback: "",
+
   feedbacks: [],
 }
 
 const ERROR_FEEDBACK: PestoApiRequestState = {
   status: "failed",
-  feedback: "",
+
   feedbacks: [],
 }
 
@@ -81,22 +81,28 @@ const requestPestoApiAsync = createAsyncThunk(
       const { data } = await axios<
         PestoProjectApiEntity[] | PestoAnotherTypeData[]
       >(req)
+
       return {
         value: data,
         status: "loading",
-        feedback:
+        feedbacks: [
           "succes: " +
-          req.method +
-          " " +
-          req.baseURL +
-          (req.url ? req.url : ""),
+            req.method +
+            " " +
+            req.baseURL +
+            (req.url ? req.url : ""),
+        ],
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        ERROR_FEEDBACK.feedback = "Axios Error: " + error.message
+        ERROR_FEEDBACK.feedbacks.splice(0, 0, "Axios Error: " + error.message)
         return ERROR_FEEDBACK
       } else {
-        ERROR_FEEDBACK.feedback = "An unexpected error occurred: " + error
+        ERROR_FEEDBACK.feedbacks.splice(
+          0,
+          0,
+          "An unexpected error occurred: " + error,
+        )
         return ERROR_FEEDBACK
       }
     }
@@ -194,11 +200,11 @@ export const pestoProjectSlice = createSlice({
         state.status = "idle"
         console.log(" PESTO REDUCER fetch fulfilled, payload: ", action.payload)
         state.value = action.payload.value
-        state.feedbacks?.splice(0, 0, action.payload.feedback)
+        state.feedbacks.splice(0, 0, action.payload.feedbacks[0])
       })
       .addCase(requestPestoApiAsync.rejected, (state) => {
         state.status = "failed"
-        state.feedback = "rejected"
+        state.feedbacks.splice(0, 0,  "rejected")
         console.log(" PESTO REDUCER requestPestoApiAsync failed")
       })
   },

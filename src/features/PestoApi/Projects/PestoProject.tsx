@@ -20,7 +20,7 @@ export function PestoProject() {
 
   useEffect(() => {
     dispatch(RequestProjectList())
-  },[])
+  }, [])
 
   return (
     <div>
