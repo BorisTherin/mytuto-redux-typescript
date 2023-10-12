@@ -1,7 +1,19 @@
-.projects {
-  display: flex;
-  flex-direction: column;
-  border: solid 1px;
+.card {
+  display: block;
+  align-content: start;
+}
+
+.card div {
+  align-content: start;
+  width: 100%;
+  display: grid;
+  grid-auto-rows: auto;
+  /* border: solid 1px; */
+  grid-row: 2;
+}
+.card div div {
+  text-align: left;
+  width: 100%;
 }
 
 .button {
@@ -27,6 +39,8 @@
   text-align: left;
   padding: 5px;
   font-size: 18px;
+  height: 80px;
+  overflow-y: scroll;
 }
 
 .App {

@@ -1,61 +1,44 @@
 import { useState, useEffect } from "react"
 import { useAppSelector, useAppDispatch } from "../../../app/hooks"
 import {
-  requestPestoApiAsync,
+  RequestProjectList,
+  CreateProject,
+  UpdateProjectById,
+  DeleteProjectById,
   request_Output,
   request_Feedback,
-  urls,
-  methods,
-  AxiosRequest,
 } from "./pestoProjectSlice"
 import "../../../App.css"
 import { Project } from "../../../components/Project"
 import { randomProject } from "./randomProject" // DEVMODE USEFULL
-
-// EVERY REQUEST IN AXIOS FORMAT
-const API_LIST_ALL_ENTITY: AxiosRequest = {
-  baseURL: urls.PESTOPROJECT,
-  method: methods.GET,
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
-}
-const API_CREATE_CONTENT_TYPE: AxiosRequest = {
-  baseURL: urls.PESTOPROJECT,
-  method: methods.POST,
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
-}
-
-//const API_GET_PROJECT_BY_NAME: AxiosRequest = {}
-//const API_GET_PROJECT_BY_URI: AxiosRequest = {}
-//const API_UPDATE_FROM_PROJECT_ID: AxiosRequest = {}
 
 export function PestoProject() {
   const requestOutput = useAppSelector(request_Output)
   const requestFeedback = useAppSelector(request_Feedback)
   const dispatch = useAppDispatch()
   const [inputValue, setInputValue] = useState(randomProject())
-  //dispatch(requestPestoApiAsync(API_LIST_ALL_ENTITY))
 
   useEffect(() => {
-    dispatch(requestPestoApiAsync(API_LIST_ALL_ENTITY))
-  }, [])
+    dispatch(RequestProjectList())
+  },[])
+
   return (
     <div>
       <div className="feedback">
         <b>
           <u>Feed-Back:</u>
         </b>
-        <br /> {requestFeedback}
+        <br />
+        <div>
+          {requestFeedback?.map((item, index) => {
+            return <div key={index}> {item} </div>
+          })}
+        </div>
       </div>
       <div>
         <br />
         <textarea
-          id="source"
+          id="source_new"
           cols={80}
           rows={5}
           value={inputValue}
@@ -66,11 +49,10 @@ export function PestoProject() {
         className="button"
         aria-label="Create Content-Type"
         onClick={async () => {
-          const data: any = document.getElementById("source")
-          API_CREATE_CONTENT_TYPE.data = JSON.parse(data.value)
-          await dispatch(requestPestoApiAsync(API_CREATE_CONTENT_TYPE))
+          const data: any = document.getElementById("source_new")
+          await dispatch(CreateProject(JSON.parse(data.value)))
           setInputValue(randomProject())
-          dispatch(requestPestoApiAsync(API_LIST_ALL_ENTITY))
+          dispatch(RequestProjectList())
         }}
       >
         NEW PROJECT
@@ -79,7 +61,7 @@ export function PestoProject() {
       <button
         className="button"
         aria-label="List entities"
-        onClick={() => dispatch(requestPestoApiAsync(API_LIST_ALL_ENTITY))}
+        onClick={() => dispatch(RequestProjectList())}
       >
         LIST PROJECTS
       </button>

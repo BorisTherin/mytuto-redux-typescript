@@ -1,100 +1,120 @@
-// import { useState } from "react"
-import { useAppDispatch /*, useAppSelector*/ } from "../app/hooks"
+import { useState } from "react"
+import { useAppDispatch } from "../app/hooks"
 import {
-  requestPestoApiAsync,
-  AxiosRequest,
-  /*request_Output,*/
-  urls,
-  methods,
+  RequestProjectList,
+  UpdateProjectById,
+  DeleteProjectById,
+  PestoProjectApiEntity,
 } from "../features/PestoApi/Projects/pestoProjectSlice"
 import "./project.css"
 
-const API_LIST_ALL_ENTITY: AxiosRequest = {
-  baseURL: urls.PESTOPROJECT,
-  method: methods.GET,
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
-}
-const API_UPDATE_FROM_PROJECT_ID: AxiosRequest = {
-  baseURL: urls.PESTOPROJECT,
-  url: "",
-  method: methods.POST,
-  data: {
-    name: "",
-    description: "",
-    git_ssh_uri: "",
-  },
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
-}
-
-const API_DELETE_ENTITY: AxiosRequest = {
-  baseURL: urls.PESTOPROJECT,
-  url: "",
-  method: methods.DELETE,
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
-}
-
 export function Project(props: any) {
-  //const requestOutput: any = useAppSelector(request_Output)
   const dispatch = useAppDispatch()
-  //const [values, setValues] = useState(props.outputs)
+  const [modalValues, setModalValues] = useState<string>()
+
+  function modal(index: number, data: PestoProjectApiEntity) {
+    console.log("data: ", data)
+    const mod: any = document.getElementById("modal_" + index)
+    mod.style.display = "block"
+    setModalValues(JSON.stringify(data))
+  }
 
   if (props.outputs && props.outputs[0] && props.outputs[0]._id !== 0) {
-    return props.outputs.map((item: any, index: number) => {
+    return props.outputs.map((item: PestoProjectApiEntity, index: number) => {
       return (
-        <div key={item._id} id={"source" + index}>
-          <div className="card">
-            <div>_id:{item._id}</div>
-            <div>name: {item.name}</div>
-            <div>git_ssh_uri: {item.git_ssh_uri}</div>
-            <div>createdAt: {item.createdAt}</div>
-            <div>__v: {item.__v}</div>
-            <div>description: {item.description}</div>
-            {/*
+        <>
+          <div className="modal" id={`modal_${index}`}>
+            EDIT: <br />
             <textarea
-              id={source_" + item._id }
+              id={`source_update_${index}`}
               rows={5}
               cols={80}
-              value={JSON.stringify(values[index])}
-              onChange={(e) => setValues([ ...values.splice(index, 1, JSON.parse(e.target.value))])}
-            />  
-            */}
-          </div>
-          <div className="control">
+              value={modalValues}
+              onChange={(e) => setModalValues(e.target.value)}
+              onKeyDown={async (e) => {
+                console.log(e.key)
+                if (e.key === "Enter") {
+                  const mod: any = document.getElementById("modal_" + index)
+                  mod.style.display = "none"
+                  const source: any = document.getElementById(
+                    "source_update_" + index,
+                  )
+                  const data: PestoProjectApiEntity = JSON.parse(source.value)
+                  await dispatch(UpdateProjectById(data))
+                  dispatch(RequestProjectList())
+                }
+              }}
+            />
             <button
               className="button"
-              aria-label="Edit"
               onClick={() => {
-                const req = { ...API_UPDATE_FROM_PROJECT_ID }
-                const data: any = document.getElementById("source_" + item._id)
-                req.data = JSON.parse(data.value)
-                dispatch(requestPestoApiAsync(req))
+                const mod: any = document.getElementById("modal_" + index)
+                mod.style.display = "none"
               }}
             >
-              Edit
+              CANCEL
             </button>
             <button
               className="button"
-              aria-label="Edit"
               onClick={async () => {
-                const req = { ...API_DELETE_ENTITY }
-                req.url = "/" + item._id
-                await dispatch(requestPestoApiAsync(req))
-                dispatch(requestPestoApiAsync(API_LIST_ALL_ENTITY))
+                const mod: any = document.getElementById("modal_" + index)
+                mod.style.display = "none"
+                const source: any = document.getElementById(
+                  "source_update_" + index,
+                )
+                const data: PestoProjectApiEntity = JSON.parse(source.value)
+                await dispatch(UpdateProjectById(data))
+                dispatch(RequestProjectList())
               }}
             >
-              Remove
+              UPDATE
             </button>
           </div>
-        </div>
+          <div key={item._id} id={"source_" + index}>
+            <div className="card">
+              <div>
+                <div>_id:</div> <div>{item._id}</div>
+              </div>
+              <div>
+                <div>name:</div> <div>{item.name}</div>
+              </div>
+              <div>
+                <div>git_ssh_uri:</div> <div>{item.git_ssh_uri}</div>
+              </div>
+              <div>
+                <div>createdAt:</div> <div>{item.createdAt}</div>
+              </div>
+              <div>
+                <div>__v:</div> <div>{item.__v}</div>
+              </div>
+              <div>
+                <div>description:</div> <div>{item.description}</div>
+              </div>
+            </div>
+            <div className="control">
+              <button
+                className="button"
+                aria-label="Edit"
+                onClick={() => {
+                  // on modal l'obj original props.outputs[x].item
+                  modal(index, item)
+                }}
+              >
+                Edit
+              </button>
+              <button
+                className="button"
+                aria-label="Edit"
+                onClick={async () => {
+                  await dispatch(DeleteProjectById("" + item._id))
+                  dispatch(RequestProjectList())
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        </>
       )
     })
   }

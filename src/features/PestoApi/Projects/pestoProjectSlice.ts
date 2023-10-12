@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { RootState } from "../../../app/store"
 import axios from "axios"
+// import { useAppDispatch } from "../../../app/hooks"
 
 const API_PORT = "3000"
 const API_HOST = "localhost"
@@ -57,24 +58,23 @@ interface PestoApiRequestState {
   value?: PestoProjectApiEntity[] | PestoAnotherTypeData[]
   status: "idle" | "loading" | "failed"
   feedback: string
+  feedbacks?: string[]
 }
 
 const initialState: PestoApiRequestState = {
   value: [],
   status: "idle",
   feedback: "",
+  feedbacks: [],
 }
 
 const ERROR_FEEDBACK: PestoApiRequestState = {
   status: "failed",
   feedback: "",
+  feedbacks: [],
 }
 
-/**
- *  YOUR METHOD FOR YOUR PAGES
- *  use `< ... onclick={dispatch(requestPestoApiAsync(YOUR_REQUEST))}>`
- */
-export const requestPestoApiAsync = createAsyncThunk(
+const requestPestoApiAsync = createAsyncThunk(
   "pestoApi/request",
   async (req: AxiosRequest): Promise<PestoApiRequestState> => {
     try {
@@ -89,7 +89,6 @@ export const requestPestoApiAsync = createAsyncThunk(
           req.method +
           " " +
           req.baseURL +
-          "/" +
           (req.url ? req.url : ""),
       }
     } catch (error) {
@@ -103,6 +102,71 @@ export const requestPestoApiAsync = createAsyncThunk(
     }
   },
 )
+
+// EVERY CRUD PROJECTS REQUEST IN AXIOS FORMAT
+export const API_LIST_ALL_ENTITY: AxiosRequest = {
+  baseURL: urls.PESTOPROJECT,
+  method: methods.GET,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+}
+export const API_CREATE_CONTENT_TYPE: AxiosRequest = {
+  baseURL: urls.PESTOPROJECT,
+  method: methods.POST,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+}
+export const API_UPDATE_FROM_PROJECT_BY_ID: AxiosRequest = {
+  baseURL: urls.PESTOPROJECT,
+  method: methods.PUT,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+}
+export const API_DELETE_ENTITY_BY_ID: AxiosRequest = {
+  baseURL: urls.PESTOPROJECT,
+  method: methods.DELETE,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+}
+/**
+ * --------------------------------------------------------------
+ *              METHODS FOR YOUR PAGES
+ *
+ *  use `< ... onclick={dispatch(CreateProject())}>`
+ *  use `< ... onclick={dispatch(RequestProjectList())}>`
+ *  use `< ... onclick={dispatch(UpdateProjectById(DATA))}>`
+ *  use `< ... onclick={dispatch(DeleteProjectById(DATA))}>`
+ * --------------------------------------------------------------
+ */
+// Create
+export const CreateProject = (data: PestoProjectApiEntity) => {
+  API_CREATE_CONTENT_TYPE.data = data
+  return requestPestoApiAsync(API_CREATE_CONTENT_TYPE)
+}
+// Retrieve
+export const RequestProjectList = () => {
+  return requestPestoApiAsync(API_LIST_ALL_ENTITY)
+}
+// Update
+export const UpdateProjectById = (data: PestoProjectApiEntity) => {
+  console.log(data)
+  API_UPDATE_FROM_PROJECT_BY_ID.url = "/" + data._id
+  API_UPDATE_FROM_PROJECT_BY_ID.data = data
+  return requestPestoApiAsync(API_UPDATE_FROM_PROJECT_BY_ID)
+}
+// Delete
+export const DeleteProjectById = (id: string) => {
+  API_DELETE_ENTITY_BY_ID.url = "/" + id
+  return requestPestoApiAsync(API_DELETE_ENTITY_BY_ID)
+}
 
 /*
   PESTO REDUCERS
@@ -130,7 +194,7 @@ export const pestoProjectSlice = createSlice({
         state.status = "idle"
         console.log(" PESTO REDUCER fetch fulfilled, payload: ", action.payload)
         state.value = action.payload.value
-        state.feedback = action.payload.feedback
+        state.feedbacks?.splice(0, 0, action.payload.feedback)
       })
       .addCase(requestPestoApiAsync.rejected, (state) => {
         state.status = "failed"
@@ -144,7 +208,7 @@ export const pestoProjectSlice = createSlice({
  *  YOUR STORE FOR ANY PAGES
  *  use  `const maVar = useAppSelector(ROOSTATE VAR)`
  */
-export const request_Feedback = (state: RootState) => state.pestoApi.feedback
+export const request_Feedback = (state: RootState) => state.pestoApi.feedbacks
 export const request_Output = (state: RootState) => state.pestoApi.value
 
 export default pestoProjectSlice.reducer

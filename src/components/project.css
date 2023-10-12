@@ -11,6 +11,17 @@
   margin-bottom: 15px;
   text-align: right;
 }
+.modal {
+  background-color: #fff;
+  color: #000;
+  border-radius: 10px;
+  border: solid 1px #000;
+  position: absolute;
+  z-index: 1;
+  display: none;
+  padding: 10px;
+  padding-top: 20px;
+}
 
 span {
   height: 20px;
