@@ -8,11 +8,13 @@ import {
 } from "../features/PestoApi/Projects/pestoProjectSlice"
 import "./project.css"
 
+/*
 interface ProjectProps {
   outputs: PestoProjectApiEntity[]
 }
+*/
 
-export function Project(props: ProjectProps): React.ReactElement {
+export function Project(props: any): React.ReactElement {
   // console.log("props: ", props)
   const dispatch = useAppDispatch()
   const [modalValues, setModalValues] = useState<string>()

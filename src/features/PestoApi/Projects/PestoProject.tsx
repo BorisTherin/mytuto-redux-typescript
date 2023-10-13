@@ -3,8 +3,8 @@ import { useAppSelector, useAppDispatch } from "../../../app/hooks"
 import {
   RequestProjectList,
   CreateProject,
-  UpdateProjectById,
-  DeleteProjectById,
+  //UpdateProjectById,
+  //DeleteProjectById,
   request_Output,
   request_Feedback,
 } from "./pestoProjectSlice"
@@ -20,7 +20,7 @@ export function PestoProject() {
 
   useEffect(() => {
     dispatch(RequestProjectList())
-  }, [])
+  }, [dispatch])
 
   return (
     <div>
