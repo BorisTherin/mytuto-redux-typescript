@@ -1,10 +1,11 @@
 import { useState } from "react"
-import { useAppDispatch } from "../app/hooks"
+import { useAppSelector, useAppDispatch } from "../app/hooks"
 import {
   RequestProjectList,
   UpdateProjectById,
   DeleteProjectById,
   PestoProjectApiEntity,
+  request_Output,
 } from "../features/PestoApi/Projects/pestoProjectSlice"
 import "./project.css"
 
@@ -14,23 +15,21 @@ interface ProjectProps {
 }
 */
 
-export function Project(props: any): React.ReactElement {
-  // console.log("props: ", props)
+export function Project() {
+  const requestOutput = useAppSelector(request_Output)
   const dispatch = useAppDispatch()
   const [modalValues, setModalValues] = useState<string>()
 
-  function modal(data: PestoProjectApiEntity) {
+  function modal(data: PestoProjectApiEntity): void {
     console.log("data: ", data)
     const mod: any = document.getElementById("modal")
     mod.style.display = "block"
     setModalValues(JSON.stringify(data))
   }
 
-  function ListProjects(props: any): React.ReactElement {
-    //console.log("re props: ", props)
-    const outputs = props.outputs
-    if (outputs && outputs[0] && outputs[0]._id !== 0) {
-      return outputs.map((item: PestoProjectApiEntity): JSX.Element => {
+  function ListProjects() {
+    if (requestOutput && requestOutput[0] && requestOutput[0]._id !== 0) {
+      return requestOutput.map((item: any) => {
         return (
           <div key={item._id}>
             <div className="ProjectCard">
@@ -79,7 +78,13 @@ export function Project(props: any): React.ReactElement {
         )
       })
     } else {
-      const div: JSX.Element = <div key={0}></div>
+      const div = [
+        <>
+          <div key={0}>
+            <div></div>
+          </div>
+        </>,
+      ]
       return div
     }
   }
@@ -130,7 +135,7 @@ export function Project(props: any): React.ReactElement {
           UPDATE
         </button>
       </div>
-      <ListProjects {...props} />
+      <ListProjects />
     </div>
   )
 }

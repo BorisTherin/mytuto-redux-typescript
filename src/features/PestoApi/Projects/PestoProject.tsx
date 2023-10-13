@@ -1,20 +1,19 @@
 import { useState, useEffect } from "react"
-import { useAppSelector, useAppDispatch } from "../../../app/hooks"
+import { /*useAppSelector,*/ useAppDispatch } from "../../../app/hooks"
 import {
   RequestProjectList,
   CreateProject,
   //UpdateProjectById,
   //DeleteProjectById,
-  request_Output,
-  request_Feedback,
+  //request_Output,
 } from "./pestoProjectSlice"
 import "../../../App.css"
 import { Project } from "../../../components/Project"
+import { Feedbacks } from "../../../components/Feedbacks"
 import { randomProject } from "./randomProject" // DEVMODE USEFULL
 
 export function PestoProject() {
-  const requestOutput = useAppSelector(request_Output)
-  const requestFeedback = useAppSelector(request_Feedback)
+  //const requestOutput = useAppSelector(request_Output)
   const dispatch = useAppDispatch()
   const [inputValue, setInputValue] = useState(randomProject())
 
@@ -24,17 +23,7 @@ export function PestoProject() {
 
   return (
     <div>
-      <div className="feedback">
-        <b>
-          <u>Feed-Back:</u>
-        </b>
-        <br />
-        <div>
-          {requestFeedback?.map((item, index) => {
-            return <div key={`feedbacks_${index}`}> {item} </div>
-          })}
-        </div>
-      </div>
+      <Feedbacks />
       <div>
         <br />
         <textarea
@@ -66,7 +55,7 @@ export function PestoProject() {
         LIST PROJECTS
       </button>
       <div className="projects">
-        <Project outputs={requestOutput} />
+        <Project />
       </div>
     </div>
   )
