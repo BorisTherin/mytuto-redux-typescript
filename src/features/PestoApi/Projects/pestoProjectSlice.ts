@@ -204,7 +204,7 @@ export const pestoProjectSlice = createSlice({
       })
       .addCase(requestPestoApiAsync.rejected, (state) => {
         state.status = "failed"
-        state.feedbacks.splice(0, 0,  "rejected")
+        state.feedbacks.splice(0, 0, "rejected")
         console.log(" PESTO REDUCER requestPestoApiAsync failed")
       })
   },

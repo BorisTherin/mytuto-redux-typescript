@@ -33,7 +33,7 @@ export function Project(props: any): React.ReactElement {
       return outputs.map((item: PestoProjectApiEntity): JSX.Element => {
         return (
           <div key={item._id}>
-            <div className="card">
+            <div className="ProjectCard">
               <div>
                 <div>_id:</div> <div>{item._id}</div>
               </div>
@@ -53,7 +53,7 @@ export function Project(props: any): React.ReactElement {
                 <div>description:</div> <div>{item.description}</div>
               </div>
             </div>
-            <div className="control">
+            <div className="controlBar">
               <button
                 className="button"
                 aria-label="Edit"

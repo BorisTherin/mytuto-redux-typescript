@@ -1,16 +1,32 @@
-.card {
-  font-size: 14px;
+.ProjectCard {
   display: block;
+  align-content: start;
+  font-size: 14px;
   flex-direction: row;
   border: solid 1px blue;
   padding: 3px;
   margin: 5px;
   text-align: left;
 }
-.control {
+
+.ProjectCard div {
+  align-content: start;
+  width: 100%;
+  display: grid;
+  grid-auto-rows: auto;
+  /* border: solid 1px; */
+  grid-row: 2;
+}
+.ProjectCard div div {
+  text-align: left;
+  width: 100%;
+}
+
+.controlBar {
   margin-bottom: 15px;
   text-align: right;
 }
+
 .modal {
   background-color: #fff;
   color: #000;
@@ -21,27 +37,4 @@
   display: none;
   padding: 10px;
   padding-top: 20px;
-}
-
-span {
-  height: 20px;
-}
-li {
-  list-style-type: none;
-}
-
-.button {
-  appearance: none;
-  background: none;
-  font-size: 18px;
-  padding-left: 12px;
-  padding-right: 12px;
-  outline: none;
-  border: 2px solid transparent;
-  color: rgb(112, 76, 182);
-  padding-bottom: 4px;
-  cursor: pointer;
-  background-color: rgba(112, 76, 182, 0.1);
-  border-radius: 2px;
-  transition: all 0.15s;
 }
