@@ -12,8 +12,8 @@ interface ProjectProps {
   outputs: PestoProjectApiEntity[]
 }
 
-export function Project(props: ProjectProps): JSX.Element {
-  console.log("props: ", props)
+export function Project(props: ProjectProps): React.ReactElement {
+  // console.log("props: ", props)
   const dispatch = useAppDispatch()
   const [modalValues, setModalValues] = useState<string>()
 
@@ -24,11 +24,11 @@ export function Project(props: ProjectProps): JSX.Element {
     setModalValues(JSON.stringify(data))
   }
 
-  function ListProjects(props: ProjectProps) {
-    console.log("re props: ", props)
-
-    if (props.outputs && props.outputs[0] && props.outputs[0]._id !== 0) {
-      return props.outputs.map((item: PestoProjectApiEntity) => {
+  function ListProjects(props: any): React.ReactElement {
+    //console.log("re props: ", props)
+    const outputs = props.outputs
+    if (outputs && outputs[0] && outputs[0]._id !== 0) {
+      return outputs.map((item: PestoProjectApiEntity): JSX.Element => {
         return (
           <div key={item._id}>
             <div className="card">
@@ -56,7 +56,7 @@ export function Project(props: ProjectProps): JSX.Element {
                 className="button"
                 aria-label="Edit"
                 onClick={() => {
-                  // on modal l'obj original props.outputs[x].item
+                  // on modal l'obj original outputs[x].item
                   modal(item)
                 }}
               >
@@ -76,6 +76,9 @@ export function Project(props: ProjectProps): JSX.Element {
           </div>
         )
       })
+    } else {
+      const div: JSX.Element = <div key={0}></div>
+      return div
     }
   }
 
@@ -90,7 +93,7 @@ export function Project(props: ProjectProps): JSX.Element {
           value={modalValues}
           onChange={(e) => setModalValues(e.target.value)}
           onKeyDown={async (e) => {
-            //console.log(e.key)
+            // ENTER TO VALID UPDATE
             if (e.key === "Enter") {
               const mod: any = document.getElementById("modal")
               mod.style.display = "none"
@@ -125,7 +128,7 @@ export function Project(props: ProjectProps): JSX.Element {
           UPDATE
         </button>
       </div>
-      <ListProjects outputs={props.outputs} />
+      <ListProjects {...props} />
     </div>
   )
 }

@@ -31,7 +31,7 @@ export function PestoProject() {
         <br />
         <div>
           {requestFeedback?.map((item, index) => {
-            return <div key={index}> {item} </div>
+            return <div key={`feedbacks_${index}`}> {item} </div>
           })}
         </div>
       </div>
